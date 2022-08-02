@@ -8,7 +8,7 @@
     onMount( async () => {
     })
 
-    window.addEventListener("message" , messageHandler, false);
+    window.addEventListener("message" , messageHandler, true);
 
     function messageHandler( event:any ){
         console.log(typeof event);
@@ -32,11 +32,11 @@
         // }
     }
 
-     const handleClick = () => {
-        console.log("ok")
-        window.localStorage.setItem('pruebaClick',JSON.stringify("holsa"));
+    //  const handleClick = () => {
+    //     console.log("ok")
+    //     window.localStorage.setItem('pruebaClick',JSON.stringify("holsa"));
 
-    }
+    // }
 
 </script>
 
@@ -64,7 +64,7 @@
                     />
                 </div>
                 <div class="flex items-baseline justify-between">
-                    <button on:click={handleClick} class="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Login</button>
+                    <button class="px-6 py-2 mt-4 text-white bg-blue-600 rounded-lg hover:bg-blue-900">Login</button>
                 </div>
             </div>
         </form>

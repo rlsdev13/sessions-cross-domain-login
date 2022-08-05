@@ -1,46 +1,31 @@
 <script lang="ts">
-    const domains = [
-        "http://localhost:3001",
-        "http://localhost:3002"
-    ]
-    import { onMount } from 'svelte';
-
-    onMount( async () => {
-    })
+    const envDomains : string = import.meta.env.VITE_DOMAINS;
+    const domains : string[] = envDomains.split(", ");
 
     window.addEventListener("message" , messageHandler, true);
 
-    function messageHandler( event:any ){
-        console.log(typeof event);
+    function messageHandler( event : MessageEvent ){
         if(!domains.includes(event.origin)){
             return;
         }
+
         window.localStorage.setItem('token',JSON.stringify(event));
 
-        // const { action, key, value } = event.data;
+        const { action, key, value } = event.data;
 
-        // if( action == 'save' ){
-        //     window.localStorage.setItem(key, JSON.stringify(value))
-        // }else if(action == 'get'){
-        //     const localSItem = window.localStorage?.getItem(key);
-        //     const item = JSON.parse(localSItem || '');
-        //     event.source.postMessage({
-        //         action : 'returnData',
-        //         key,
-        //         item
-        //     },'*');
-        // }
+        if( action === 'save' ){
+            window.localStorage.setItem(key, JSON.stringify(value));
+        }else if(action == 'get'){
+            const localSItem = window.localStorage.getItem(key)!;
+            const item = JSON.parse(localSItem);
+            event.source!.postMessage({
+                action : 'returnData',
+                key,
+                item
+            });
+        }
     }
-
-    //  const handleClick = () => {
-    //     console.log("ok")
-    //     window.localStorage.setItem('pruebaClick',JSON.stringify("holsa"));
-
-    // }
-
 </script>
-
-<!-- <svelte:window on:/> -->
 
 <div class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="px-8 py-6 mt-4 text-left bg-white shadow-lg">

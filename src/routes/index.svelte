@@ -1,12 +1,15 @@
 <script lang="ts">
+    import { createEventDispatcher } from 'svelte';
     import Swal2 from 'sweetalert2';
 
-    let correo : string = '';
-    let password : string = '';
+    const dispatch = createEventDispatcher();
+
+    let correo : string = 'user6sda@gmail.com';
+    let password : string = '123456';
 
     const envDomains : string = import.meta.env.VITE_DOMAINS;
-    const domains : string[] = envDomains.split(", ");
     const urlBackend : string = import.meta.env.VITE_LOGIN_BACKEND;
+    const domains : string[] = envDomains.split(", ");
 
     window.addEventListener("message" , messageHandler, true);
 
@@ -20,7 +23,7 @@
 
         if( action === 'save' ){
             window.localStorage.setItem(key, JSON.stringify(value));
-        }else if(action == 'get'){
+        }else if(action === 'get'){
             const localSItem = window.localStorage.getItem(key)!;
             const item = JSON.parse(localSItem);
             event.source!.postMessage({
@@ -55,6 +58,11 @@
             });
 
             window.localStorage.setItem('token',body.access_token);
+            
+            parent.postMessage({
+                type:"session.loaded",
+                token: window.localStorage.getItem('token')
+            },"*");    
 
         } catch (error) {
             Swal2.fire({
@@ -64,9 +72,6 @@
                 showConfirmButton : false
             });
         }
-        
-                
-        
     }
 
 </script>

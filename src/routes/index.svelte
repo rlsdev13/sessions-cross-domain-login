@@ -18,11 +18,13 @@
         if( action === 'login' ){
             handleLogin(correo,password);
         }else if(action === 'get'){
-            const item = window.localStorage.getItem('token')!;
-            parent.postMessage({
-                type : 'returnToken',
-                token : item
-            },'*');
+            const item = window.localStorage.getItem('token');
+            if(item){
+                parent.postMessage({
+                    type : 'returnToken',
+                    token : item
+                },'*');
+            }
         }
     }
 

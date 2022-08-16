@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { onMount } from 'svelte';
+
     const envDomains : string = import.meta.env.VITE_DOMAINS;
     const urlBackend : string = import.meta.env.VITE_LOGIN_BACKEND;
     const domains : string[] = envDomains.split(", ");
@@ -51,5 +53,11 @@
             return error;
         }
     }
+
+    onMount(() => {
+        parent.postMessage({
+            type:"iframe.loaded",
+        },"*");
+    });
 
 </script>

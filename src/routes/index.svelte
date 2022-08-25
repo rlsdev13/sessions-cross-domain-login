@@ -25,6 +25,19 @@
                     token : item
                 },'*');
             }
+        }else if(action === 'logout'){
+            window.localStorage.clear();
+            console.log("logout 8080");
+            parent.postMessage({
+                type : 'logout',
+            },'*');
+        }else if( action === 'isToken'){
+            const token = !!window.localStorage.getItem('token');
+            console.log('Exist token');
+            parent.postMessage({
+                type : 'isToken',
+                exist : token
+            },'*')
         }
     }
 

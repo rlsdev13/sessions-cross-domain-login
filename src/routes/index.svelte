@@ -19,12 +19,12 @@
             handleLogin(correo,password);
         }else if(action === 'get'){
             const item = window.localStorage.getItem('token');
-            if(item){
+            // if(item){
                 parent.postMessage({
                     type : 'returnToken',
                     token : item
                 },'*');
-            }
+            // }
         }else if(action === 'logout'){
             window.localStorage.clear();
             console.log("logout 8080");
@@ -36,7 +36,8 @@
             console.log('Exist token');
             parent.postMessage({
                 type : 'isToken',
-                exist : token
+                exist : token,
+                token : window.localStorage.getItem('token')
             },'*')
         }
     }
@@ -48,7 +49,7 @@
                     'Content-Type': 'application/json',
                 },
                 method : 'POST',
-                body : JSON.stringify({ correo, password })
+                body : JSON.stringify({ email : correo, password })
             });
 
             const body = await resp.json();
@@ -61,7 +62,8 @@
             
             parent.postMessage({
                 type:"session.loaded",
-                token: window.localStorage.getItem('token')
+                token: window.localStorage.getItem('token'),
+                user : body
             },"*");    
 
         } catch (error) {

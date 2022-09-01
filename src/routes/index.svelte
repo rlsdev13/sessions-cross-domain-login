@@ -13,32 +13,13 @@
             return;
         }
 
-        const { action, correo, password } = event.data;
+        const { action, type, message } = event.data;
 
         if( action === 'login' ){
-            handleLogin(correo,password);
-        }else if(action === 'get'){
-            const item = window.localStorage.getItem('token');
-            // if(item){
-                parent.postMessage({
-                    type : 'returnToken',
-                    token : item
-                },'*');
-            // }
-        }else if(action === 'logout'){
+            const { correo, password } = message;
+            handleLogin( correo, password );
+        }else if( action === 'logout' ){
             window.localStorage.clear();
-            console.log("logout 8080");
-            parent.postMessage({
-                type : 'logout',
-            },'*');
-        }else if( action === 'isToken'){
-            const token = !!window.localStorage.getItem('token');
-            console.log('Exist token');
-            parent.postMessage({
-                type : 'isToken',
-                exist : token,
-                token : window.localStorage.getItem('token')
-            },'*')
         }
     }
 
@@ -55,15 +36,22 @@
             const body = await resp.json();
 
             if(resp.status != 201){
-                throw new Error('Unauthorized')    
+                parent.postMessage({
+                    action : "error",
+                    type : "string",
+                    message: "Credenciales invalidas",
+                },'*'); 
+                throw new Error('Unauthorized') 
             }
 
-            window.localStorage.setItem('token',body.access_token);
+            const token : string = body.access_token
+
+            window.localStorage.setItem( 'token', token );
             
             parent.postMessage({
-                type:"session.loaded",
-                token: window.localStorage.getItem('token'),
-                user : body
+                action : "session",
+                type : "string",
+                message: window.localStorage.getItem('token'),
             },"*");    
 
         } catch (error) {
@@ -72,8 +60,12 @@
     }
 
     onMount(() => {
+        console.log("login loaded");
+        // window.localStorage.setItem('token','pruebaTokenFirefox');
         parent.postMessage({
-            type:"iframe.loaded",
+            action: "loaded",
+            type: "existToken",
+            message : window.localStorage.getItem('token')
         },"*");
     });
 
